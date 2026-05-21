@@ -15,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
         
+        // Add ForceSessionCookie middleware to global stack
+        $middleware->append(\App\Http\Middleware\ForceSessionCookie::class);
+        
         // Add trust proxies for Render
         $middleware->trustProxies(at: '*');
         $middleware->trustProxies(headers: \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR |
@@ -22,14 +25,8 @@ return Application::configure(basePath: dirname(__DIR__))
                                          \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT |
                                          \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO);
         
-        // Force session cookie configuration for Render
-        if (isset($_SERVER['RENDER']) || env('APP_ENV') === 'production') {
-            config([
-                'session.domain' => '.onrender.com',
-                'session.secure' => true,
-                'session.same_site' => 'lax',
-            ]);
-        }
+        // DO NOT use config() here - it causes fatal error!
+        // The session configuration is already handled in config/session.php
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
