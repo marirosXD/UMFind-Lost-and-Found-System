@@ -70,5 +70,6 @@ RUN php artisan migrate --force || true
 
 # Expose port
 EXPOSE 10000
+
 # Start Apache
 CMD ["apache2-foreground"]
