@@ -21,6 +21,15 @@ return Application::configure(basePath: dirname(__DIR__))
                                          \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST |
                                          \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT |
                                          \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO);
+        
+        // Force session cookie configuration for Render
+        if (isset($_SERVER['RENDER']) || env('APP_ENV') === 'production') {
+            config([
+                'session.domain' => '.onrender.com',
+                'session.secure' => true,
+                'session.same_site' => 'lax',
+            ]);
+        }
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

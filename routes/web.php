@@ -145,3 +145,16 @@ Route::get('/debug-session', function() {
         'render' => $_SERVER['RENDER'] ?? 'not set',
     ];
 });
+
+Route::get('/set-cookie', function() {
+    cookie()->queue('test_cookie', 'working', 10);
+    return 'Cookie set. Check Application → Storage → Cookies';
+});
+
+Route::get('/check-cookie', function() {
+    return [
+        'test_cookie' => request()->cookie('test_cookie'),
+        'laravel_session' => request()->cookie(session()->getName()),
+        'all_cookies' => request()->cookies->all(),
+    ];
+});

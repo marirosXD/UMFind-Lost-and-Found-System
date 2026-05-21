@@ -4,7 +4,7 @@ use Illuminate\Support\Str;
 
 return [
 
-    'driver' => env('SESSION_DRIVER', 'cookie'),
+    'driver' => env('SESSION_DRIVER', 'file'),
 
     'lifetime' => env('SESSION_LIFETIME', 120),
 
@@ -22,21 +22,23 @@ return [
 
     'lottery' => [2, 100],
 
-    'cookie' => env(
-        'SESSION_COOKIE',
-        Str::slug(env('APP_NAME', 'laravel'), '_').'_session'
-    ),
+    'cookie' => env('SESSION_COOKIE', 'laravel_session'),
 
     'path' => '/',
 
-    'domain' => env('SESSION_DOMAIN', null),
+    // FORCE Render settings - check if on Render
+    'domain' => (isset($_SERVER['RENDER']) || env('APP_ENV') === 'production') 
+        ? '.onrender.com' 
+        : env('SESSION_DOMAIN', null),
 
-    'secure' => env('SESSION_SECURE_COOKIE', false),  
+    'secure' => (isset($_SERVER['RENDER']) || env('APP_ENV') === 'production') 
+        ? true 
+        : env('SESSION_SECURE_COOKIE', false),
 
-    'http_only' => env('SESSION_HTTP_ONLY', true),
+    'http_only' => true,
 
-    'same_site' => env('SESSION_SAME_SITE', 'lax'),
+    'same_site' => 'lax',
 
-    'partitioned' => env('SESSION_PARTITIONED_COOKIE', false),
+    'partitioned' => false,
 
 ];
