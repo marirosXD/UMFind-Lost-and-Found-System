@@ -52,6 +52,10 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 # Install frontend dependencies and build assets
 RUN npm install && npm run build
 
+RUN rm -f .env
+
+RUN php artisan config:cache
+
 RUN php artisan config:clear \
 && php artisan route:clear \
 && php artisan view:clear
