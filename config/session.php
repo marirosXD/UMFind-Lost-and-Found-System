@@ -31,7 +31,7 @@ return [
 
     'domain' => env('SESSION_DOMAIN', null),
 
-    'secure' => env('SESSION_SECURE_COOKIE', true),
+    'secure' => env('SESSION_SECURE_COOKIE', false),  
 
     'http_only' => env('SESSION_HTTP_ONLY', true),
 

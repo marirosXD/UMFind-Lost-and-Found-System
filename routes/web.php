@@ -130,3 +130,18 @@ Route::middleware(['auth', 'admin'])
 
 // Laravel auth routes
 require __DIR__.'/auth.php';
+
+Route::get('/debug-session', function() {
+    return [
+        'session_driver' => config('session.driver'),
+        'session_domain' => config('session.domain'),
+        'session_secure' => config('session.secure'),
+        'session_same_site' => config('session.same_site'),
+        'app_env' => app()->environment(),
+        'app_url' => config('app.url'),
+        'trusted_proxies' => config('trustedproxy.proxies'),
+        'server_https' => isset($_SERVER['HTTPS']),
+        'forwarded_proto' => $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? 'not set',
+        'render' => $_SERVER['RENDER'] ?? 'not set',
+    ];
+});

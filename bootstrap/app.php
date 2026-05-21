@@ -14,6 +14,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
+        
+        // Add trust proxies for Render
+        $middleware->trustProxies(at: '*');
+        $middleware->trustProxies(headers: \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR |
+                                         \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST |
+                                         \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT |
+                                         \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
