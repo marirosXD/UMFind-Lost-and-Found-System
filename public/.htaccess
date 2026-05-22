@@ -23,16 +23,3 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
-
-# Force HTTPS and session cookies for Render
-<IfModule mod_headers.c>
-    Header set X-Forwarded-Proto "https"
-    Header set X-Forwarded-Ssl "on"
-    Header edit Set-Cookie ^(.*)$ $1; HttpOnly; Secure; SameSite=Lax
-</IfModule>
-
-# Set environment variables for Render
-<IfModule mod_env.c>
-    SetEnv RENDER true
-    SetEnv HTTPS on
-</IfModule>
