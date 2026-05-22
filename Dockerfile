@@ -54,19 +54,21 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 # Install and build frontend assets
 RUN npm ci && npm run build
 
-# Fix storage & cache permissions (storage:link runs at startup, not build)
+# Pre-create storage dirs with open permissions
 RUN mkdir -p storage/framework/cache/data \
     storage/framework/sessions \
     storage/framework/views \
     storage/app/public/uploads \
     bootstrap/cache \
-    && chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache
+    && chmod -R 777 storage bootstrap/cache
 
 EXPOSE 10000
 
-# Startup: run migrations, create storage link, then start Apache
+# Startup: re-fix permissions at runtime, then start Apache
 CMD bash -c "\
+    mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/app/public/uploads bootstrap/cache && \
+    chmod -R 777 storage bootstrap/cache && \
+    chown -R www-data:www-data storage bootstrap/cache && \
     php artisan storage:link --force 2>/dev/null || true && \
     php artisan migrate --force && \
     php artisan config:clear && \
