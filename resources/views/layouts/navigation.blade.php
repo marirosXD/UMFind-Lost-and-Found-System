@@ -12,27 +12,32 @@
             <!-- Desktop Nav Links -->
             <div class="hidden md:flex items-center space-x-8">
                 @auth
-                    <a href="{{ route('dashboard') }}" 
+                    <a href="{{ route('dashboard') }}"
                     class="text-gray-600 hover:text-pink-500 transition {{ request()->routeIs('dashboard') ? 'text-pink-500 font-semibold border-b-2 border-pink-500' : '' }}">
                         Dashboard
                     </a>
-                    <a href="{{ route('items.index') }}" 
+
+                    <a href="{{ route('items.index') }}"
                     class="text-gray-600 hover:text-pink-500 transition {{ request()->routeIs('items.index') ? 'text-pink-500 font-semibold border-b-2 border-pink-500' : '' }}">
                         Browse
                     </a>
-                    
 
-                    @auth
+                    {{-- Regular users only --}}
                     @if(!auth()->user()->isAdmin())
-                        <a href="{{ route('items.create') }}">Post Item</a>
+                        <a href="{{ route('items.create') }}"
+                        class="text-gray-600 hover:text-pink-500 transition {{ request()->routeIs('items.create') ? 'text-pink-500 font-semibold border-b-2 border-pink-500' : '' }}">
+                            Post Item
+                        </a>
+
+                        <a href="{{ route('my-items') }}"
+                        class="text-gray-600 hover:text-pink-500 transition {{ request()->routeIs('my-items') ? 'text-pink-500 font-semibold border-b-2 border-pink-500' : '' }}">
+                            My Items
+                        </a>
                     @endif
-                    @endauth
 
-                    
-                    {{-- ADMIN ONLY LINKS --}}
+                    {{-- Admin only --}}
                     @if(auth()->user()->role === 'admin')
-
-                        <a href="{{ route('admin.dashboard') }}" 
+                        <a href="{{ route('admin.dashboard') }}"
                         class="text-gray-600 hover:text-pink-500 transition {{ request()->routeIs('admin.dashboard') ? 'text-pink-500 font-semibold border-b-2 border-pink-500' : '' }}">
                             Manage Items & Users
                         </a>
@@ -41,17 +46,15 @@
                         class="text-gray-700 hover:text-pink-500 transition {{ request()->routeIs('admin.claims.index') ? 'text-pink-500 font-semibold border-b-2 border-pink-500' : '' }}">
                             Claim History
                         </a>
-
                     @endif
                 @endauth
             </div>
-            
+
             <!-- Right Side -->
             <div class="flex items-center space-x-3">
                 @auth
-                    <!-- Dropdown - Click to toggle -->
                     <div class="relative">
-                        <button id="userDropdownBtn" 
+                        <button id="userDropdownBtn"
                                 onclick="toggleUserDropdown()"
                                 class="flex items-center space-x-2 bg-gray-50 hover:bg-gray-100 px-4 py-2 rounded-xl transition cursor-pointer">
                             <div class="w-8 h-8 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center">
@@ -62,7 +65,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        
+
                         <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg z-50 border border-gray-100">
                             <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-gray-700 hover:bg-pink-50 rounded-t-xl transition">Profile</a>
                             <form method="POST" action="{{ route('logout') }}">
@@ -71,33 +74,27 @@
                             </form>
                         </div>
                     </div>
-                 @else
-        <!-- Sign In Button - Active only on login page -->
-        <a href="{{ route('login') }}" 
-           class="{{ request()->routeIs('login') ? 'text-pink-500 font-semibold border-b-2 border-pink-500' : 'text-gray-600 hover:text-pink-500' }} transition-all duration-200">
-            Sign In
-        </a>
-        
-        <!-- Get Started Button - Active only on register page -->
-        <a href="{{ route('register') }}" 
-           class="{{ request()->routeIs('register') ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 rounded-xl shadow-md ring-2 ring-pink-400' : 'btn-primary text-sm' }} transition-all duration-200">
-            Get Started
-        </a>
-    @endauth
-</div>
+                @else
+                    <a href="{{ route('login') }}"
+                       class="{{ request()->routeIs('login') ? 'text-pink-500 font-semibold border-b-2 border-pink-500' : 'text-gray-600 hover:text-pink-500' }} transition-all duration-200">
+                        Sign In
+                    </a>
 
-
-            
+                    <a href="{{ route('register') }}"
+                       class="{{ request()->routeIs('register') ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 rounded-xl shadow-md ring-2 ring-pink-400' : 'btn-primary text-sm' }} transition-all duration-200">
+                        Get Started
+                    </a>
+                @endauth
+            </div>
         </div>
     </div>
 </nav>
 
-<!-- JavaScript for Click Dropdown -->
 <script>
     function toggleUserDropdown() {
         const dropdown = document.getElementById('userDropdown');
         const arrow = document.getElementById('dropdownArrow');
-        
+
         if (dropdown.classList.contains('hidden')) {
             dropdown.classList.remove('hidden');
             if (arrow) arrow.style.transform = 'rotate(180deg)';
@@ -107,11 +104,10 @@
         }
     }
 
-    // Close dropdown when clicking outside
     document.addEventListener('click', function(event) {
         const dropdown = document.getElementById('userDropdown');
         const button = document.getElementById('userDropdownBtn');
-        
+
         if (dropdown && button && !button.contains(event.target)) {
             dropdown.classList.add('hidden');
             const arrow = document.getElementById('dropdownArrow');
@@ -121,7 +117,5 @@
 </script>
 
 <style>
-    body {
-        padding-top: 0;
-    }
+    body { padding-top: 0; }
 </style>

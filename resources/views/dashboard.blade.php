@@ -7,6 +7,8 @@
         <p class="text-gray-600">Welcome back, <strong>{{ auth()->user()->name }}</strong>!</p>
         
         <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            @if(!auth()->user()->isAdmin())
             <div class="bg-blue-50 rounded-lg p-6">
                 <h3 class="text-lg font-semibold mb-2">Your Items</h3>
                 <p class="text-gray-600">Manage your posted items</p>
@@ -14,7 +16,7 @@
                     View My Items →
                 </a>
             </div>
-            
+
             <div class="bg-green-50 rounded-lg p-6">
                 <h3 class="text-lg font-semibold mb-2">Post New Item</h3>
                 <p class="text-gray-600">Report a lost or found item</p>
@@ -22,6 +24,24 @@
                     Post Item →
                 </a>
             </div>
+            @else
+            <div class="bg-pink-50 rounded-lg p-6">
+                <h3 class="text-lg font-semibold mb-2">Manage Items & Users</h3>
+                <p class="text-gray-600">View and manage all items and users</p>
+                <a href="{{ route('admin.dashboard') }}" class="inline-block mt-4 text-pink-600 hover:text-pink-800">
+                    Go to Admin Panel →
+                </a>
+            </div>
+
+            <div class="bg-rose-50 rounded-lg p-6">
+                <h3 class="text-lg font-semibold mb-2">Claim History</h3>
+                <p class="text-gray-600">View all claim records</p>
+                <a href="{{ route('admin.claims.index') }}" class="inline-block mt-4 text-rose-600 hover:text-rose-800">
+                    View Claims →
+                </a>
+            </div>
+            @endif
+
         </div>
     </div>
 </div>
