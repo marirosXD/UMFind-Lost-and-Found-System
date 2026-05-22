@@ -120,21 +120,23 @@ Route::middleware(['auth', 'admin'])
     });
 
     Route::get('/debug-csrf', function() {
+    // Force a manual cookie to test if ANY cookie reaches the browser
+    cookie()->queue('test_manual', 'hello123', 10);
+    
     return response()->json([
-        'session_id'      => session()->getId(),
-        'session_driver'  => config('session.driver'),
-        'session_domain'  => config('session.domain'),
-        'session_secure'  => config('session.secure'),
+        'session_id'        => session()->getId(),
+        'session_driver'    => config('session.driver'),
+        'session_domain'    => config('session.domain'),
+        'session_secure'    => config('session.secure'),
         'session_same_site' => config('session.same_site'),
-        'csrf_token'      => csrf_token(),
-        'app_key_set'     => !empty(config('app.key')),
-        'app_env'         => config('app.env'),
-        'cookies_received'=> request()->cookies->all(),
-        'forwarded_proto' => request()->header('X-Forwarded-Proto'),
-        'is_secure'       => request()->isSecure(),
+        'csrf_token'        => csrf_token(),
+        'app_key_set'       => !empty(config('app.key')),
+        'app_env'           => config('app.env'),
+        'cookies_received'  => request()->cookies->all(),
+        'forwarded_proto'   => request()->header('X-Forwarded-Proto'),
+        'is_secure'         => request()->isSecure(),
     ]);
 });
-
 
 // Laravel auth routes
 require __DIR__.'/auth.php';
