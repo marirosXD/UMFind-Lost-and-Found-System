@@ -22,22 +22,20 @@ return [
 
     'lottery' => [2, 100],
 
-    'cookie' => env('SESSION_COOKIE', 'laravel_session'),
+    'cookie' => env(
+        'SESSION_COOKIE',
+        Str::slug(env('APP_NAME', 'laravel'), '_').'_session'
+    ),
 
-    'path' => '/',
+    'path' => env('SESSION_PATH', '/'),
 
-    // FORCE Render settings - check if on Render
-    'domain' => (isset($_SERVER['RENDER']) || env('APP_ENV') === 'production') 
-        ? '.onrender.com' 
-        : env('SESSION_DOMAIN', null),
+    'domain' => env('SESSION_DOMAIN'),
 
-    'secure' => (isset($_SERVER['RENDER']) || env('APP_ENV') === 'production') 
-        ? true 
-        : env('SESSION_SECURE_COOKIE', false),
+    'secure' => env('SESSION_SECURE_COOKIE', false),
 
-    'http_only' => true,
+    'http_only' => env('SESSION_HTTP_ONLY', true),
 
-    'same_site' => 'lax',
+    'same_site' => env('SESSION_SAME_SITE', 'lax'),
 
     'partitioned' => false,
 

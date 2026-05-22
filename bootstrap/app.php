@@ -14,19 +14,15 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
-        
-        // Add ForceSessionCookie middleware to global stack
-        $middleware->append(\App\Http\Middleware\ForceSessionCookie::class);
-        
-        // Add trust proxies for Render
+
+        // Trust all proxies (required for Render's load balancer)
         $middleware->trustProxies(at: '*');
-        $middleware->trustProxies(headers: \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR |
-                                         \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST |
-                                         \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT |
-                                         \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO);
-        
-        // DO NOT use config() here - it causes fatal error!
-        // The session configuration is already handled in config/session.php
+        $middleware->trustProxies(headers:
+            \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR |
+            \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST |
+            \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT |
+            \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO
+        );
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

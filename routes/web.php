@@ -57,7 +57,7 @@ Route::middleware('auth')->group(function () {
         ->name('my-items');
 
     Route::get('/profile', [ProfileController::class, 'edit'])
-    ->name('profile.edit');
+        ->name('profile.edit');
 
     Route::patch('/profile', [ProfileController::class, 'update'])
         ->name('profile.update');
@@ -96,22 +96,14 @@ Route::middleware(['auth', 'admin'])
         Route::patch('/items/{item}/receive', [ItemController::class, 'receiveItem'])
            ->name('receiveItem');
 
-        // -----------------------------
-        // return SYSTEM (ADMIN ONLY)
-        // -----------------------------
-
-        // Show return form
+        // Return system
         Route::get('/items/{item}/return', [AdminController::class, 'showReturnForm'])
             ->name('items.return.form');
 
-        // Store return info + update status
         Route::post('/items/{item}/return', [AdminController::class, 'storeReturn'])
             ->name('items.return.store');
 
-        // -----------------------------
-        // CLAIM SYSTEM (ADMIN ONLY)
-        // -----------------------------
-
+        // Claim system
         Route::get('/claims', [ClaimController::class, 'index'])
             ->name('claims.index');
 
@@ -130,31 +122,3 @@ Route::middleware(['auth', 'admin'])
 
 // Laravel auth routes
 require __DIR__.'/auth.php';
-
-Route::get('/debug-session', function() {
-    return [
-        'session_driver' => config('session.driver'),
-        'session_domain' => config('session.domain'),
-        'session_secure' => config('session.secure'),
-        'session_same_site' => config('session.same_site'),
-        'app_env' => app()->environment(),
-        'app_url' => config('app.url'),
-        'trusted_proxies' => config('trustedproxy.proxies'),
-        'server_https' => isset($_SERVER['HTTPS']),
-        'forwarded_proto' => $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? 'not set',
-        'render' => $_SERVER['RENDER'] ?? 'not set',
-    ];
-});
-
-Route::get('/set-cookie', function() {
-    cookie()->queue('test_cookie', 'working', 10);
-    return 'Cookie set. Check Application → Storage → Cookies';
-});
-
-Route::get('/check-cookie', function() {
-    return [
-        'test_cookie' => request()->cookie('test_cookie'),
-        'laravel_session' => request()->cookie(session()->getName()),
-        'all_cookies' => request()->cookies->all(),
-    ];
-});
