@@ -15,8 +15,13 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Enable Apache rewrite
+# Enable Apache modules
 RUN a2enmod rewrite headers
+
+# Configure PHP for Laravel - fix output buffering and session issues
+RUN echo "output_buffering = Off" >> /usr/local/etc/php/php.ini-production \
+    && echo "output_buffering = Off" >> /usr/local/etc/php/php.ini-development \
+    && cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 
 # Make Apache listen on port 10000 (Render's default)
 RUN sed -i 's/Listen 80/Listen 10000/g' /etc/apache2/ports.conf \
@@ -26,11 +31,13 @@ RUN sed -i 's/Listen 80/Listen 10000/g' /etc/apache2/ports.conf \
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf \
     && sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/apache2.conf
 
-# Allow .htaccess for Laravel
+# Allow .htaccess for Laravel + set ServerName to suppress warning
 RUN printf '<Directory /var/www/html/public>\n\
     AllowOverride All\n\
     Require all granted\n\
-</Directory>\n' > /etc/apache2/conf-available/laravel.conf \
+</Directory>\n\
+ServerName umfind-lost-and-found-system.onrender.com\n' \
+    > /etc/apache2/conf-available/laravel.conf \
     && a2enconf laravel
 
 # Install Node.js 20
@@ -54,7 +61,7 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 # Install and build frontend assets
 RUN npm ci && npm run build
 
-# Pre-create storage dirs with open permissions
+# Pre-create storage dirs
 RUN mkdir -p storage/framework/cache/data \
     storage/framework/sessions \
     storage/framework/views \
@@ -64,7 +71,7 @@ RUN mkdir -p storage/framework/cache/data \
 
 EXPOSE 10000
 
-# Startup: re-fix permissions at runtime, then start Apache
+# Startup: fix permissions at runtime, migrate, start Apache
 CMD bash -c "\
     mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/app/public/uploads bootstrap/cache && \
     chmod -R 777 storage bootstrap/cache && \
