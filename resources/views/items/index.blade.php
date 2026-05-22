@@ -11,9 +11,11 @@
                 <p class="text-gray-500 mt-1">Browse through all reported items</p>
             </div>
             @auth
-                <a href="{{ route('items.create') }}" class="btn-primary">
-                    + Post New Item
-                </a>
+                @if(auth()->user()->role !== 'admin')
+                    <a href="{{ route('items.create') }}" class="btn-primary">
+                        + Post New Item
+                    </a>
+                @endif
             @endauth
         </div>
 
