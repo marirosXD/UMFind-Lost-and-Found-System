@@ -15,7 +15,7 @@ services:
       - key: APP_URL
         value: https://umfind-lost-and-found-system.onrender.com
       - key: SESSION_DRIVER
-        value: file
+        value: database
       - key: SESSION_LIFETIME
         value: 120
       - key: SESSION_ENCRYPT
@@ -29,7 +29,7 @@ services:
       - key: SESSION_SAME_SITE
         value: lax
       - key: CACHE_STORE
-        value: file
+        value: database
       - key: FILESYSTEM_DISK
         value: public
       - key: DB_CONNECTION
