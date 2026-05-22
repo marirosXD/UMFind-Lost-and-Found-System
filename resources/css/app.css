@@ -25,3 +25,14 @@
 ::-webkit-scrollbar-track { background: #f1f1f1; }
 ::-webkit-scrollbar-thumb { background: #f472b6; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #ec4899; }
+
+/* Fix transparent inputs/selects/textareas in Tailwind v4 production */
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([readonly]),
+select,
+textarea {
+    background-color: white;
+}
+
+input[readonly] {
+    background-color: #f3f4f6;
+}
