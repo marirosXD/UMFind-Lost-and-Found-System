@@ -120,24 +120,37 @@ Route::middleware(['auth', 'admin'])
     });
 
     Route::get('/debug-csrf', function() {
-    // Raw PHP cookie - bypasses Laravel entirely
-    setcookie('raw_test', 'php_works_' . time(), time() + 3600, '/', '', false, false);
-    
-    return response()->json([
+    $response = response()->json([
         'session_id'        => session()->getId(),
         'session_driver'    => config('session.driver'),
         'session_domain'    => config('session.domain'),
         'session_secure'    => config('session.secure'),
+        'session_same_site' => config('session.same_site'),
         'csrf_token'        => csrf_token(),
         'app_key_set'       => !empty(config('app.key')),
         'app_env'           => config('app.env'),
         'cookies_received'  => request()->cookies->all(),
         'forwarded_proto'   => request()->header('X-Forwarded-Proto'),
         'is_secure'         => request()->isSecure(),
-        'headers_sent'      => headers_sent($file, $line) ? "YES - sent at $file:$line" : 'NO',
     ]);
-});
 
+    // Manually force the session cookie onto the response
+    $response->headers->setCookie(
+        new \Symfony\Component\HttpFoundation\Cookie(
+            name: 'test_forced',
+            value: 'working_' . time(),
+            expire: time() + 3600,
+            path: '/',
+            domain: null,
+            secure: false,
+            httpOnly: false,
+            raw: false,
+            sameSite: 'lax'
+        )
+    );
+
+    return $response;
+});
 
 // Laravel auth routes
 require __DIR__.'/auth.php';
