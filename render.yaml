@@ -23,7 +23,7 @@ services:
       - key: SESSION_PATH
         value: /
       - key: SESSION_DOMAIN
-        value: umfind-lost-and-found-system.onrender.com
+        value: ""
       - key: SESSION_SECURE_COOKIE
         value: true
       - key: SESSION_SAME_SITE
@@ -50,4 +50,3 @@ services:
         value: stderr
       - key: LOG_LEVEL
         value: error
-
