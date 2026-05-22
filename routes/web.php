@@ -119,6 +119,22 @@ Route::middleware(['auth', 'admin'])
         Route::post('/claims/{item}', [ClaimController::class, 'store'])->name('claims.store');
     });
 
+    Route::get('/debug-csrf', function() {
+    return response()->json([
+        'session_id'      => session()->getId(),
+        'session_driver'  => config('session.driver'),
+        'session_domain'  => config('session.domain'),
+        'session_secure'  => config('session.secure'),
+        'session_same_site' => config('session.same_site'),
+        'csrf_token'      => csrf_token(),
+        'app_key_set'     => !empty(config('app.key')),
+        'app_env'         => config('app.env'),
+        'cookies_received'=> request()->cookies->all(),
+        'forwarded_proto' => request()->header('X-Forwarded-Proto'),
+        'is_secure'       => request()->isSecure(),
+    ]);
+});
+
 
 // Laravel auth routes
 require __DIR__.'/auth.php';
