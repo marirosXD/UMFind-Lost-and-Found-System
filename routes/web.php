@@ -120,10 +120,7 @@ Route::middleware(['auth', 'admin'])
     });
 
     Route::get('/debug-csrf', function() {
-    // Force a manual cookie to test if ANY cookie reaches the browser
-    cookie()->queue('test_manual', 'hello123', 10);
-    
-    return response()->json([
+    $response = response()->json([
         'session_id'        => session()->getId(),
         'session_driver'    => config('session.driver'),
         'session_domain'    => config('session.domain'),
@@ -136,6 +133,23 @@ Route::middleware(['auth', 'admin'])
         'forwarded_proto'   => request()->header('X-Forwarded-Proto'),
         'is_secure'         => request()->isSecure(),
     ]);
+
+    // Manually force the session cookie onto the response
+    $response->headers->setCookie(
+        new \Symfony\Component\HttpFoundation\Cookie(
+            name: 'test_forced',
+            value: 'working_' . time(),
+            expire: time() + 3600,
+            path: '/',
+            domain: null,
+            secure: false,
+            httpOnly: false,
+            raw: false,
+            sameSite: 'lax'
+        )
+    );
+
+    return $response;
 });
 
 // Laravel auth routes
